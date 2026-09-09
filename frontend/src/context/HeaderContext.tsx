@@ -15,13 +15,13 @@ interface HeaderContextType {
 const HeaderContext = createContext<HeaderContextType | undefined>(undefined);
 
 export const HeaderProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [title, setTitle] = useState('Globot AI');
+    const [title, setTitle] = useState('AEGIS AI');
     const [subtitle, setSubtitle] = useState('');
     const [extraContent, setExtraContent] = useState<ReactNode | null>(null);
     const [showShieldIcon, setShowShieldIcon] = useState(false);
 
     const resetHeader = () => {
-        setTitle('Globot AI');
+        setTitle('AEGIS AI');
         setSubtitle('');
         setExtraContent(null);
         setShowShieldIcon(false);

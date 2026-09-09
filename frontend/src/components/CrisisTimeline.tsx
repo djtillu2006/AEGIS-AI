@@ -6,7 +6,7 @@ import React from 'react';
 import { MOCK_SHIPS, Ship } from '../utils/shipData';
 import { formatUTCTimeShort, getUTCTimestamp } from '../utils/timeUtils';
 
-interface TimelineEvent {
+export interface TimelineEvent {
   id: string;
   time: string;
   message: string;
@@ -16,6 +16,7 @@ interface TimelineEvent {
 interface CrisisTimelineProps {
   executionPhase?: 'pending' | 'executing' | 'complete';
   onShipClick?: (ship: Ship) => void;
+  externalEvents?: TimelineEvent[];
 }
 
 // Shanghai → Hamburg Demo Scenario (~2 min, 35 events)
@@ -72,7 +73,7 @@ const executionMessages = [
   { message: '✅ Crisis averted. Estimated savings vs Suez exposure: $3.8M. Vessel safe on Cape route', type: 'success' as const },
 ];
 
-export function CrisisTimeline({ executionPhase = 'pending', onShipClick }: CrisisTimelineProps) {
+export function CrisisTimeline({ executionPhase = 'pending', onShipClick, externalEvents = [] }: CrisisTimelineProps) {
   const [riskData, setRiskData] = useState([
     { time: '09:00', risk: 15 },
     { time: '09:30', risk: 22 },
@@ -280,7 +281,7 @@ export function CrisisTimeline({ executionPhase = 'pending', onShipClick }: Cris
           )}
           
           <AnimatePresence>
-            {events.map((event) => {
+            {[...events, ...externalEvents].map((event) => {
               const Icon = getEventIcon(event.type);
               const color = getEventColor(event.type);
               const isCritical = event.type === 'critical';

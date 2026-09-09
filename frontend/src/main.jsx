@@ -6,10 +6,11 @@ import 'antd/dist/reset.css'
 import './styles/index.css'
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
-
-if (!PUBLISHABLE_KEY) {
-  console.warn("Missing Clerk Publishable Key. Please set VITE_CLERK_PUBLISHABLE_KEY in your .env file.")
-}
+const HAS_VALID_PUBLISHABLE_KEY = Boolean(
+  PUBLISHABLE_KEY &&
+  /^pk_(test|live)_[A-Za-z0-9_-]+$/.test(PUBLISHABLE_KEY) &&
+  !/^pk_(test|live)_x+$/.test(PUBLISHABLE_KEY),
+)
 
 console.log("🚀 Main.jsx is executing!");
 
@@ -46,12 +47,31 @@ class ErrorBoundary extends React.Component {
   }
 }
 
+function ClerkConfigurationNotice() {
+  return (
+    <main style={{ padding: 32, maxWidth: 720, margin: '0 auto', fontFamily: 'system-ui, sans-serif' }}>
+      <h1>Clerk configuration required</h1>
+      <p>
+        Add a real Clerk publishable key to <code>frontend/.env</code> and restart the Vite server.
+      </p>
+      <p>
+        Set <code>VITE_CLERK_PUBLISHABLE_KEY</code> to a key beginning with <code>pk_test_</code> or{' '}
+        <code>pk_live_</code>. The placeholder key is not accepted.
+      </p>
+    </main>
+  )
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ErrorBoundary>
-      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-        <App />
-      </ClerkProvider>
+      {HAS_VALID_PUBLISHABLE_KEY ? (
+        <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+          <App />
+        </ClerkProvider>
+      ) : (
+        <ClerkConfigurationNotice />
+      )}
     </ErrorBoundary>
   </React.StrictMode>,
 )

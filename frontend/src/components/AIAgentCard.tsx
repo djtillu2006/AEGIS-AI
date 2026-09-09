@@ -11,6 +11,8 @@ interface AIAgentCardProps {
   status: AgentStatus;
   lastAction: string;
   isAdversarial?: boolean;
+  statusBadge?: string;
+  statusBadgeColor?: string;
 }
 
 export function AIAgentCard({
@@ -20,6 +22,8 @@ export function AIAgentCard({
   status,
   lastAction,
   isAdversarial = false,
+  statusBadge,
+  statusBadgeColor,
 }: AIAgentCardProps) {
   const getStatusColor = () => {
     switch (status) {
@@ -99,12 +103,12 @@ export function AIAgentCard({
               <span
                 className="text-[10px] font-mono tracking-wider px-2 py-0.5 rounded-sm"
                 style={{
-                  color: getStatusColor(),
-                  backgroundColor: `${getStatusColor()}20`,
-                  border: `1px solid ${getStatusColor()}40`,
+                  color: statusBadgeColor || getStatusColor(),
+                  backgroundColor: `${statusBadgeColor || getStatusColor()}20`,
+                  border: `1px solid ${statusBadgeColor || getStatusColor()}40`,
                 }}
               >
-                {getStatusText()}
+                {statusBadge || getStatusText()}
               </span>
             </div>
             <p className="text-xs text-white/40">{role}</p>

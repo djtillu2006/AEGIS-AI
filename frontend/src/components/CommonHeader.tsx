@@ -78,7 +78,7 @@ export const CommonHeader: React.FC = () => {
                     }}>
                         <Shield style={{ width: '20px', height: '20px', color: 'white' }} />
                     </div>
-                    {!isDemoPage && <h3 style={{ color: 'white', margin: 0, fontSize: '1.1rem', fontWeight: 600, whiteSpace: 'nowrap' }}>Globot AI</h3>}
+                    {!isDemoPage && <h3 style={{ color: 'white', margin: 0, fontSize: '1.1rem', fontWeight: 600, whiteSpace: 'nowrap' }}>AEGIS AI</h3>}
                 </div>
 
                 {/* Navigation Links */}
@@ -137,7 +137,7 @@ export const CommonHeader: React.FC = () => {
                                 WebkitTextFillColor: 'transparent',
                                 whiteSpace: 'nowrap'
                             }}>
-                                Globot Shield
+                                AEGIS AI Shield
                             </h1>
                             <p style={{ margin: 0, fontSize: '11px', color: 'rgba(255,255,255,0.4)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                 {subtitle}

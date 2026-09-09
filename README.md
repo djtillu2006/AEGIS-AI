@@ -1,7 +1,6 @@
 # Globot
 
 [![CI](https://github.com/Vector897/Globot/actions/workflows/ci.yml/badge.svg)](https://github.com/Vector897/Globot/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.11](https://img.shields.io/badge/Python-3.11-3776AB.svg)](backend/requirements.txt)
 [![React + Vite](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61DAFB.svg)](frontend/package.json)
 
@@ -31,7 +30,6 @@ The repository is an ecosystem building block for **responsible agentic logistic
 - [Architecture](#architecture)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Current status
 
@@ -40,7 +38,6 @@ Globot is actively maintained as a public research / demonstration project.
 | Area | Status |
 | --- | --- |
 | Stars / forks | Tracked on GitHub; community PRs welcome |
-| License | [MIT](LICENSE) |
 | CI | Backend syntax + frontend production build on `main` and PRs |
 | Default data | Mock / synthetic — **not** live trading, sanctions, or execution |
 | Production readiness | **Not** production-ready without deployers adding auth, secrets, data licenses, and review controls |
@@ -77,6 +74,24 @@ python start_server.py
 ```
 
 API: `http://localhost:8000`
+
+### AEGIS AI pipeline
+
+The new five-agent backend is organized under `backend/agents`, with typed schemas under `backend/models`, API routes under `backend/api`, SQLite audit storage under `backend/db`, and provider boundaries under `backend/services`.
+
+The starter pipeline uses deterministic mock fallbacks and does not require paid provider keys:
+
+```text
+POST /api/risk/{port_name}
+POST /api/simulate
+POST /api/orchestrate
+POST /api/compliance
+POST /api/audit
+POST /api/pipeline/run
+POST /api/pipeline/approve/{audit_log_id}
+```
+
+The pipeline order is Market Sentinel, Digital Twin, Logistics Orchestrator, Carbon & Compliance, and Trust & Audit. Every pipeline response remains human-gated; it never auto-executes a route plan. See `backend/.env.example` for optional Gemini, news, satellite, carrier, and Chroma settings.
 
 ### Frontend
 
@@ -126,7 +141,6 @@ Longer-term maintainer automation and opt-in OpenAI usage: [docs/OPENAI_API_PLAN
 
 | Signal | Detail |
 | --- | --- |
-| License | OSI-approved MIT |
 | Community files | CONTRIBUTING, SECURITY, CODE_OF_CONDUCT, GOVERNANCE, SUPPORT |
 | Automation | GitHub Actions CI + Dependabot |
 | Maintainer | Primary maintainer [@Vector897](https://github.com/Vector897) with write access |
@@ -160,9 +174,5 @@ Local checks before review:
 python -m compileall -q backend
 cd frontend && pnpm build
 ```
-
-## License
-
-Globot is released under the [MIT License](LICENSE).
 
 **Primary maintainer:** [Vector897](https://github.com/Vector897)

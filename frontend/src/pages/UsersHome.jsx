@@ -761,7 +761,7 @@ export function UsersHome() {
                                              onFocus={() => setShowPortDropdown(true)}
                                              onBlur={() => setTimeout(() => setShowPortDropdown(false), 300)}
                                              placeholder="Click to browse or type to search..."
-                                             className="w-full bg-[#0a0e1a] border border-white/10 rounded-xl px-4 py-3 text-sm font-medium focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all placeholder:text-white/20"
+                                             className="w-full bg-[#0a0e1a] border border-white/10 rounded-xl px-4 py-3 text-sm font-medium text-white focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 outline-none transition-all placeholder:text-white/20"
                                           />
                                           
                                           {/* Dropdown */}

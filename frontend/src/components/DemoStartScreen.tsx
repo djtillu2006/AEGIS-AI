@@ -78,7 +78,7 @@ export function DemoStartScreen({ onStart, currentOrigin, currentDestination, is
             <Ship className="w-7 h-7 text-[#0078d4]" strokeWidth={1.5} />
           </div>
           <h1 className="text-xl font-semibold mb-1 tracking-wide leading-tight m-0 p-0" style={{ color: 'rgba(255,255,255,0.9)' }}>
-            {isChanging ? 'Change Crisis Route' : 'Globot Crisis Scenario Demo'}
+            {isChanging ? 'Change Crisis Route' : 'AEGIS AI Crisis Scenario Demo'}
           </h1>
           <p className="text-xs leading-relaxed m-0 p-0" style={{ color: 'rgba(255,255,255,0.5)' }}>
             {isChanging 

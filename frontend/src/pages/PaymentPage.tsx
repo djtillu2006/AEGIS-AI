@@ -160,7 +160,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, selectedTi
           <div className="payment-modal-icon">
             <Shield className="w-8 h-8 text-[#0078d4]" />
           </div>
-          <h2>Welcome to Globot {selectedTier}</h2>
+          <h2>Welcome to AEGIS AI {selectedTier}</h2>
           <p>Experience AI-powered supply chain protection</p>
         </div>
 
@@ -351,7 +351,7 @@ export const PaymentPage: React.FC = () => {
           </div>
 
           <h1 className="hero-title">
-            <span className="hero-title-gradient">Globot Shield</span>
+            <span className="hero-title-gradient">AEGIS AI Shield</span>
             <br />
             Securing Global Lifelines
           </h1>
@@ -440,7 +440,7 @@ export const PaymentPage: React.FC = () => {
         >
           <h2 className="section-title">Real-World Crisis Response</h2>
           <p className="section-subtitle">
-            See how Globot transforms reactive firefighting into proactive protection
+            See how AEGIS AI transforms reactive firefighting into proactive protection
           </p>
         </motion.div>
 
@@ -543,7 +543,7 @@ export const PaymentPage: React.FC = () => {
         >
           <h2 className="cta-title">Securing the Lifelines of Global Economy</h2>
           <p className="cta-subtitle">
-            When Globot helps Maersk reroute during a Red Sea crisis, it means Kenya's grain won't run out, 
+            When AEGIS AI helps Maersk reroute during a Red Sea crisis, it means Kenya's grain won't run out,
             Europe's gas supply stays secure, and critical medical equipment reaches hospitals on time.
           </p>
           <div className="cta-buttons">
@@ -564,10 +564,10 @@ export const PaymentPage: React.FC = () => {
         <div className="footer-content">
           <div className="footer-brand">
             <Shield className="w-6 h-6 text-[#0078d4]" />
-            <span>Globot</span>
+            <span>AEGIS AI</span>
           </div>
           <p className="footer-tagline">Trading with Confidence</p>
-          <p className="footer-copyright">© 2026 Globot. Google Gemini 3 Hackathon Project.</p>
+          <p className="footer-copyright">Google Gemini 3 Hackathon Project.</p>
         </div>
       </footer>
 

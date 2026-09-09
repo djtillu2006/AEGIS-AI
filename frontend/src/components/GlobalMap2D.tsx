@@ -322,6 +322,19 @@ export function GlobalMap2D({
 
   const currentShipData = getShipData();
 
+  const getRouteDisplayColor = (routeObj: any, alpha = 220) => {
+    const isRedSeaRoute = routeObj?.waypointNames?.some((name: string) => /red sea|suez|bab el|bab_el|red_sea/i.test(name));
+    const crisisActive = activeCrises.red_sea;
+
+    if (crisisActive) {
+      return isRedSeaRoute ? [239, 68, 68, alpha] : [34, 197, 94, alpha];
+    }
+
+    if (routeObj?.riskLevel === 'high') return [239, 68, 68, alpha];
+    if (routeObj?.riskLevel === 'medium') return [245, 158, 11, alpha];
+    return [34, 197, 94, alpha];
+  };
+
   const layers = [
     // 1. Background Water (Google Maps dark style)
     new SolidPolygonLayer({
@@ -374,15 +387,18 @@ export function GlobalMap2D({
 
     // 3. Shipping Routes (PathLayer)
     ...Object.entries(paths).map(([routeName, pathCoords]: [string, any]) => {
+      const routeObj = routes?.find(r => r.id === routeName);
       const isSelected = selectedRouteFromParent ? selectedRouteFromParent.id === routeName : true;
+      const color = getRouteDisplayColor(routeObj ?? { waypointNames: [routeName] }, isSelected ? 255 : 180);
+
       return new PathLayer({
         id: `route-${routeName.replace(/\s+/g, '-')}`,
         data: [{ path: pathCoords, name: routeName }],
         getPath: (d: any) => d.path,
-        getColor: isSelected ? COLOR_ROUTE_ACTIVE : COLOR_ROUTE_DEFAULT,
-        getWidth: isSelected ? 2 : 1,
+        getColor: color,
+        getWidth: isSelected ? 2.5 : 1.5,
         widthMinPixels: 1,
-        widthMaxPixels: 3,
+        widthMaxPixels: 4,
         capRounded: true,
         jointRounded: true,
         pickable: true,

@@ -12,6 +12,9 @@ import { AgentWorkflow } from '../components/AgentWorkflow';
 import { AgentCoTPanel } from '../components/AgentCoTPanel';
 import { VisualRiskPanel } from '../components/VisualRiskPanel';
 import { CompliancePanel } from '../components/CompliancePanel';
+import { RiskTabPanel } from '../components/RiskTabPanel';
+import { ComplyTabPanel } from '../components/ComplyTabPanel';
+import { TimelineEvent } from '../components/CrisisTimeline';
 
 import { Route, GlobalPort, calculateRoutes } from '../utils/routeCalculator';
 import { Ship } from '../utils/shipData';
@@ -188,6 +191,16 @@ export const DemoPage: React.FC = () => {
 
   // === Sidebar Tab State ===
   const [sidebarTab, setSidebarTab] = useState<'intelligence' | 'agents' | 'risk' | 'compliance'>('intelligence');
+  const [agentEvents, setAgentEvents] = useState<TimelineEvent[]>([]);
+
+  const appendAgentEvent = useCallback((message: string, type: TimelineEvent['type'] = 'success') => {
+    setAgentEvents(previous => [...previous, {
+      id: `agent-${Date.now()}-${previous.length}`,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      message,
+      type,
+    }]);
+  }, []);
 
   // Keyboard shortcuts handler
   useEffect(() => {
@@ -872,6 +885,7 @@ export const DemoPage: React.FC = () => {
               <CrisisTimeline
                 executionPhase={executionPhase}
                 onShipClick={setSelectedShip}
+                externalEvents={agentEvents}
               />
             </div>
           </div>
@@ -969,6 +983,7 @@ export const DemoPage: React.FC = () => {
                   hedgeLoading={hedgeLoading}
                   hedgeError={hedgeError}
                   onRunHedge={runHedgeAnalysis}
+                  onSystemEvent={appendAgentEvent}
                   isCotActive={isCotActive}
                   debateCount={debates.length}
                   executionPhase={executionPhase}
@@ -976,6 +991,7 @@ export const DemoPage: React.FC = () => {
               )}
               {sidebarTab === 'risk' && (
                 <div className="p-3">
+                  <RiskTabPanel selectedRoute={selectedRoute} />
                   <VisualRiskPanel
                     isAnalyzing={visualRiskAnalyzing}
                     analysisSource={visualRiskSource}
@@ -988,6 +1004,7 @@ export const DemoPage: React.FC = () => {
               )}
               {sidebarTab === 'compliance' && (
                 <div className="p-3">
+                  <ComplyTabPanel />
                   <div className="mb-3 flex items-center justify-between rounded-sm border border-[#4c3a15] bg-[#1f1a12] px-3 py-2">
                     <div className="flex items-center gap-2">
                       <Shield className="h-3.5 w-3.5 text-[#f59e0b]" />

@@ -47,4 +47,13 @@ langchain==0.0.208
 langchain-chroma==0.0.208
 chromadb==0.3.24
 
+# AEGIS AI starter requirements
+fastapi
+uvicorn
+crewai
+chromadb
+google-generativeai
+pydantic
+python-dotenv
+
 

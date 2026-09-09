@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { AlertTriangle, TrendingUp, Package, Shield, GitBranch, Play } from "lucide-react";
 import { AIAgentCard, AgentStatus } from "./AIAgentCard";
+import { DigitalTwinAgentCard } from './DigitalTwinAgentCard';
+import { RouteDealPlannerAgentCard } from './RouteDealPlannerAgentCard';
+import { TrustAuditAgentCard } from './TrustAuditAgentCard';
+import { FULL_DEMO_AGENT_ORDER, MOCK_AGENT_DATA } from '../data/mockAgentData';
 import { MarketSentinelResponse } from "../services/marketSentinel";
 import { RiskAssessment, HedgeRecommendation } from "../services/hedgeApi";
 
@@ -44,14 +48,15 @@ interface AgentWorkflowProps {
   marketSentinelData?: MarketSentinelResponse | null;
   marketSentinelLoading?: boolean;
   marketSentinelError?: string | null;
-  onRunMarketSentinel?: () => void;
+  onRunMarketSentinel?: () => void | Promise<void>;
   selectedRoute?: { name: string; distance: number; estimatedTime: number; riskLevel: string; waypointNames: string[]; description: string } | null;
   // Hedge data
   hedgeRiskData?: RiskAssessment | null;
   hedgeRecommendation?: HedgeRecommendation | null;
   hedgeLoading?: boolean;
   hedgeError?: string | null;
-  onRunHedge?: () => void;
+  onRunHedge?: () => void | Promise<void>;
+  onSystemEvent?: (message: string, type?: 'critical' | 'info' | 'success') => void;
   // CoT / Debate / Execution
   isCotActive?: boolean;
   debateCount?: number;
@@ -71,12 +76,54 @@ export const AgentWorkflow: React.FC<AgentWorkflowProps> = ({
   hedgeLoading,
   hedgeError,
   onRunHedge,
+  onSystemEvent,
   isCotActive,
   debateCount = 0,
   executionPhase = 'pending',
 }) => {
   const [agents, setAgents] = useState<AgentState[]>(INITIAL_AGENTS);
-  const [selectedAgentId, setSelectedAgentId] = useState<"market_sentinel" | "risk_hedger" | null>(null);
+  const [selectedAgentId, setSelectedAgentId] = useState<"market_sentinel" | "risk_hedger" | "digital_twin" | "route_deal_planner" | "trust_audit" | null>(null);
+  const [sequenceStatuses, setSequenceStatuses] = useState<Partial<Record<typeof FULL_DEMO_AGENT_ORDER[number], AgentStatus>>>({});
+  const [fullDemoRunning, setFullDemoRunning] = useState(false);
+
+  const wait = (milliseconds: number) => new Promise(resolve => setTimeout(resolve, milliseconds));
+  const sequenceState = (id: typeof FULL_DEMO_AGENT_ORDER[number], fallback: { status: AgentStatus; lastAction: string }) => {
+    const status = sequenceStatuses[id];
+    if (!status) return fallback;
+    const actions: Record<typeof FULL_DEMO_AGENT_ORDER[number], { running: string; completed: string }> = {
+      market_sentinel: { running: 'Scanning global news and route risk signals...', completed: 'Market signals reviewed. Disruption risk detected.' },
+      digital_twin: { running: 'Simulating disruption scenarios across the supply chain...', completed: MOCK_AGENT_DATA.digitalTwin.result },
+      route_deal_planner: { running: 'Comparing multimodal routes and carrier quotes...', completed: MOCK_AGENT_DATA.routeDealPlanner.result },
+      risk_hedger: { running: 'Recalculating financial exposure and hedge coverage...', completed: 'Financial exposure recalculated. +$180K fuel cost hedge applied.' },
+      trust_audit: { running: 'Checking guardrails, consistency, and audit evidence...', completed: MOCK_AGENT_DATA.trustAudit.result },
+    };
+    return { status, lastAction: status === 'thinking' ? actions[id].running : status === 'completed' ? actions[id].completed : fallback.lastAction };
+  };
+
+  const runFullDemo = async () => {
+    if (fullDemoRunning) return;
+    setFullDemoRunning(true);
+    setSequenceStatuses({});
+    const runStep = async (id: typeof FULL_DEMO_AGENT_ORDER[number], action?: () => void | Promise<void>, message?: string) => {
+      setSelectedAgentId(id);
+      setSequenceStatuses(previous => ({ ...previous, [id]: 'thinking' }));
+      await wait(900);
+      await action?.();
+      setSequenceStatuses(previous => ({ ...previous, [id]: 'completed' }));
+      if (message) onSystemEvent?.(message, 'success');
+      await wait(900);
+    };
+
+    try {
+      await runStep('market_sentinel', onRunMarketSentinel, 'Market Sentinel: Global route signals reviewed. Risk profile updated.');
+      await runStep('digital_twin', undefined, 'Digital Twin: Simulated 3 disruption scenarios. Best plan selected.');
+      await runStep('route_deal_planner', undefined, 'Route & Deal Planner: Route drafted via Cape of Good Hope. 3 quotes compared.');
+      await runStep('risk_hedger', onRunHedge, 'Risk Hedger: Financial exposure recalculated. +$180K fuel cost hedge applied.');
+      await runStep('trust_audit', undefined, 'Trust & Audit: Guardrails passed. Audit log #AEGIS-20260907-0143 created.');
+    } finally {
+      setFullDemoRunning(false);
+    }
+  };
 
   // Helper to get Market Sentinel status based on real API data
   const getMarketSentinelStatus = (): { status: AgentStatus; lastAction: string } => {
@@ -330,13 +377,13 @@ export const AgentWorkflow: React.FC<AgentWorkflowProps> = ({
           };
 
     setAgents([
-      { id: "market_sentinel", ...sentinelState },
-      { id: "risk_hedger", ...hedgeState },
+      { id: "market_sentinel", ...sequenceState('market_sentinel', sentinelState) },
+      { id: "risk_hedger", ...sequenceState('risk_hedger', hedgeState) },
       { id: "logistics", ...logisticsState },
       { id: "compliance", ...complianceState },
       { id: "debate", ...debateState },
     ]);
-  }, [currentTime, isLive, marketSentinelData, marketSentinelLoading, marketSentinelError, hedgeRiskData, hedgeRecommendation, hedgeLoading, hedgeError, isCotActive, debateCount, executionPhase, selectedRoute, selectedAgentId]);
+  }, [currentTime, isLive, marketSentinelData, marketSentinelLoading, marketSentinelError, hedgeRiskData, hedgeRecommendation, hedgeLoading, hedgeError, isCotActive, debateCount, executionPhase, selectedRoute, selectedAgentId, sequenceStatuses]);
 
   const getAgentById = (id: string) => agents.find(a => a.id === id);
 
@@ -377,6 +424,14 @@ export const AgentWorkflow: React.FC<AgentWorkflowProps> = ({
               {marketSentinelLoading ? 'Running...' : 'Run Sentinel'}
             </button>
           )}
+          <button
+            onClick={runFullDemo}
+            disabled={fullDemoRunning}
+            className="flex items-center gap-1.5 px-2.5 py-1 bg-[#2dd4bf]/20 border border-[#2dd4bf]/50 rounded-sm text-[10px] font-medium text-[#2dd4bf] hover:bg-[#2dd4bf]/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          >
+            <Play className="w-3 h-3" strokeWidth={2} />
+            {fullDemoRunning ? 'Running...' : 'Run Full Demo'}
+          </button>
           {onRunHedge && (
             <button
               onClick={() => {
@@ -518,6 +573,28 @@ export const AgentWorkflow: React.FC<AgentWorkflowProps> = ({
           lastAction={getAgentById("risk_hedger")?.lastAction || ""}
         />
         </button>
+
+        <DigitalTwinAgentCard
+          status={sequenceStatuses.digital_twin || 'idle'}
+          lastAction={sequenceState('digital_twin', { status: 'idle', lastAction: 'Select Digital Twin to run' }).lastAction}
+          selected={selectedAgentId === 'digital_twin'}
+          onClick={() => setSelectedAgentId('digital_twin')}
+        />
+
+        <RouteDealPlannerAgentCard
+          status={sequenceStatuses.route_deal_planner || 'idle'}
+          lastAction={sequenceState('route_deal_planner', { status: 'idle', lastAction: 'Select Route & Deal Planner to run' }).lastAction}
+          selected={selectedAgentId === 'route_deal_planner'}
+          onClick={() => setSelectedAgentId('route_deal_planner')}
+        />
+
+        <TrustAuditAgentCard
+          status={sequenceStatuses.trust_audit || 'idle'}
+          lastAction={sequenceState('trust_audit', { status: 'idle', lastAction: 'Select Trust & Audit to run' }).lastAction}
+          selected={selectedAgentId === 'trust_audit'}
+          requiresApproval={MOCK_AGENT_DATA.trustAudit.requiresApproval}
+          onClick={() => setSelectedAgentId('trust_audit')}
+        />
        
       </div>
     </div>

@@ -387,3 +387,11 @@ class ComplianceCheck(Base):
     # Relationships
     customer = relationship("Customer")
     vessel = relationship("Vessel", back_populates="compliance_checks")
+
+
+# AEGIS AI pipeline schemas are exported separately from legacy SQLAlchemy models.
+from models.aegis_compliance_report import AegisComplianceReport
+from models.decision_chain import AuditResult, DecisionChain
+from models.port_risk import PortRiskReport
+from models.route_plan import RoutePlan
+from models.supply_chain_state import ShipmentState, SupplyChainState

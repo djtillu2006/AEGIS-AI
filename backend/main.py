@@ -36,6 +36,8 @@ from api.v2.market_sentinel_routes import router as market_sentinel_router
 from api.v2.maritime_routes import router as maritime_router
 from api.v2.hedge_routes import router as hedge_router
 from api.v2.visual_risk_routes import router as visual_risk_router
+from api.aegis_routes import router as aegis_router
+from db.sqlite_store import initialize_sqlite
 
 
 # 配置日志
@@ -44,6 +46,7 @@ logger = logging.getLogger(__name__)
 
 # 创建数据库表
 Base.metadata.create_all(bind=engine)
+initialize_sqlite()
 
 # 创建FastAPI应用
 app = FastAPI(
@@ -115,6 +118,7 @@ app.include_router(market_sentinel_router)
 app.include_router(maritime_router)
 app.include_router(hedge_router)
 app.include_router(visual_risk_router)
+app.include_router(aegis_router)
 from api.analytics import router as analytics_router
 app.include_router(analytics_router)
 

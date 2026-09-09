@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     )
     
     # 数据库
-    database_url: str = "postgresql://user:password@localhost:5432/globot"
+    database_url: str = "sqlite:///./data/aegis_ai.sqlite3"
     
     # LLM选择: ollama 或 openai
     llm_provider: str = "ollama"

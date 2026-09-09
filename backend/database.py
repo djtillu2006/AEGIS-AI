@@ -5,11 +5,14 @@ from config import get_settings
 
 settings = get_settings()
 
-# 创建数据库引擎
+# SQLite needs check_same_thread=False for FastAPI's multi-thread request handling.
+_connect_args = {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
+
 engine = create_engine(
     settings.database_url,
     pool_pre_ping=True,
-    echo=settings.debug
+    echo=settings.debug,
+    connect_args=_connect_args,
 )
 
 # 创建会话工厂

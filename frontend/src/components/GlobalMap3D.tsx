@@ -388,15 +388,28 @@ export function GlobalMap3D({
 
     // 3. Shipping Routes (PathLayer)
     ...Object.entries(paths).map(([routeName, pathCoords]: [string, any]) => {
+      const routeObj = routes?.find(r => r.id === routeName);
       const isSelected = selectedRouteFromParent ? selectedRouteFromParent.id === routeName : true;
+      const baseColor = routeObj?.riskLevel === 'high'
+        ? [239, 68, 68, 255]
+        : routeObj?.riskLevel === 'medium'
+          ? [245, 158, 11, 255]
+          : [34, 197, 94, 255];
+
+      const crisisColor = activeCrises.red_sea
+        ? (routeObj?.waypointNames?.some((name: string) => /red sea|suez|bab el|bab_el|red_sea/i.test(name))
+          ? [239, 68, 68, 255]
+          : [34, 197, 94, 255])
+        : baseColor;
+
       return new PathLayer({
         id: `route-${routeName.replace(/\s+/g, '-')}`,
         data: [{ path: pathCoords, name: routeName }],
         getPath: (d: any) => d.path,
-        getColor: isSelected ? COLOR_ROUTE_ACTIVE : COLOR_ROUTE_DEFAULT,
-        getWidth: isSelected ? 30000 : 15000,
+        getColor: crisisColor,
+        getWidth: isSelected ? 35000 : 18000,
         widthMinPixels: 1,
-        widthMaxPixels: 3,
+        widthMaxPixels: 4,
         capRounded: true,
         jointRounded: true,
         pickable: true,

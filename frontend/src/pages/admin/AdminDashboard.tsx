@@ -149,7 +149,7 @@ export const AdminDashboard: React.FC = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' }}>
         <div>
           <Title level={2} style={{ marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            Globot 智能看板 
+            AEGIS AI 智能看板
             <AntTooltip title="看板显示实时业务指标与 AI 决策性能数据">
               <InfoCircleOutlined style={{ fontSize: '16px', color: '#8c8c8c', cursor: 'pointer' }} />
             </AntTooltip>

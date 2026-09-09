@@ -35,6 +35,15 @@ export interface RouteOptions {
   weatherPenalty?: number;
 }
 
+export const getRiskColorHex = (riskLevel: Route['riskLevel']) => {
+  switch (riskLevel) {
+    case 'high': return '#ef4444';
+    case 'medium': return '#f59e0b';
+    case 'low': return '#22c55e';
+    default: return '#64748b';
+  }
+};
+
 // ============================================================
 // Precomputed Adjacency List  (O(1) neighbor lookup per node)
 // ============================================================
@@ -357,11 +366,13 @@ function buildRouteObject(
   if (nodeIds.includes('bab_el_mandeb') || nodeIds.includes('suez_s')) riskLevel = 'high';
   else if (nodeIds.includes('malacca_exit')) riskLevel = 'medium';
 
+  const resolvedColor = getRiskColorHex(riskLevel);
+
   return {
     id,
     name,
     riskLevel,
-    color,
+    color: resolvedColor,
     strokeWidth: 3,
     waypoints,
     waypointNames,
