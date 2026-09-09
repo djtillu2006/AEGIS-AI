@@ -1,4 +1,5 @@
 # Aegis AI
+# AEGIS-AI
 [![Python 3.11](https://img.shields.io/badge/Python-3.11-3776AB.svg)](backend/requirements.txt)
 [![React + Vite](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61DAFB.svg)](frontend/package.json)
 
