@@ -42,7 +42,7 @@ requests==2.32.5
 # uvloop ignored on Windows
 
 # transformers and embeddings
-transformers==4.31.0
+transformers==5.16.1
 sentence-transformers==2.3.0
 # langchain==0.0.208  # commented out: older pin incompatible with Python 3.13
 # langchain-chroma==0.0.208  # commented out: remove problematic pin
